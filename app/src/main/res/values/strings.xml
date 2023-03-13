@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Requirements Manager</string>
+    <string name="new_project_name">Sample Project Name</string>
+    <string name="dataentrega">Data estimada de entrega</string>
+    <string name="startdate">Data de ínicio</string>
+    <string name="projectname">Nome do projeto</string>
+    <string name="projectdata">Dados do projeto</string>
+</resources>
