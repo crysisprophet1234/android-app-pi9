@@ -33,7 +33,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="140dp"
+            android:layout_marginTop="70dp"
             android:background="#ffffff"
             android:orientation="vertical"
             tools:context=".application.MainActivity">
@@ -41,46 +41,28 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
                 android:text="Criador de Projetos"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
 
-            <androidx.cardview.widget.CardView
+            <ScrollView
+                android:id="@+id/project_cards_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="50dp">
+                android:layout_height="450dp"
+                android:layout_marginHorizontal="3dp"
+                android:background="@drawable/scrollview_border">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="15dp"
-                    android:background="#03A9F4"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/textView7"
-                        android:layout_width="203dp"
-                        android:layout_height="wrap_content"
-                        android:text="Nome do projeto v3.84"
-                        android:textAlignment="viewStart" />
-
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="08/03/2023"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+            </ScrollView>
 
             <Button
                 android:id="@+id/createProjectBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="35dp"
                 android:text="Criar novo projeto"></Button>
         </LinearLayout>
 

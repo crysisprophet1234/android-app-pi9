@@ -40,6 +40,7 @@
             tools:context=".application.MainActivity">
 
             <TextView
+                android:id="@+id/secret_mock_requirement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/new_project_name"
@@ -162,14 +163,6 @@
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
-            <Button
-                android:id="@+id/finishBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_gravity="center"
-                android:text="Finalizar"></Button>
 
         </LinearLayout>
 

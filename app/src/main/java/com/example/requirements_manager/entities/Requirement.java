@@ -13,11 +13,13 @@ public class Requirement {
     private String difficulty;
     private Integer hours;
 
+    private Project project;
+
     public Requirement(){
 
     }
 
-    public Requirement(Integer id, String title, String desc, String importance, String difficulty, Integer hours) {
+    public Requirement(Integer id, String title, String desc, String importance, String difficulty, Integer hours, Project project) {
         this.id = id;
         this.title = title;
         this.desc = desc;
@@ -25,6 +27,7 @@ public class Requirement {
         this.importance = importance;
         this.difficulty = difficulty;
         this.hours = hours;
+        this.project = project;
     }
 
     public Integer getId() {
@@ -83,6 +86,9 @@ public class Requirement {
         this.hours = hours;
     }
 
+    public Project getProject() { return project; }
+    public void setProject(Project project) { this.project = project; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -98,7 +104,7 @@ public class Requirement {
 
     @Override
     public String toString() {
-        return "Requirement {" +
+        return "Requirement{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", desc='" + desc + '\'' +
@@ -106,6 +112,8 @@ public class Requirement {
                 ", importance='" + importance + '\'' +
                 ", difficulty='" + difficulty + '\'' +
                 ", hours=" + hours +
+                ", project.id=" + project.getId() +
+                ", project.name=" + project.getName() +
                 '}';
     }
 }

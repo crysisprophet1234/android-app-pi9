@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="Project Name"/>
+
+        <TextView
+            android:id="@+id/tv_weeks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Weeks: 12"
+            android:layout_below="@id/tv_name"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_finish_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Finish Date: 2023-06-30"
+            android:layout_below="@id/tv_weeks"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="John Doe"
+            android:layout_below="@id/tv_finish_date"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,37 +1,56 @@
 package com.example.requirements_manager.application;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.requirements_manager.R;
 import com.example.requirements_manager.entities.Project;
+import com.example.requirements_manager.entities.Requirement;
+import com.example.requirements_manager.services.ProjectService;
+import com.example.requirements_manager.services.RequirementService;
+import com.example.requirements_manager.services.UserService;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProjectActivity extends AppCompatActivity {
 
+    public static List<Requirement> requirementsInput = new ArrayList<>();
     TextInputEditText projectName, projectStartDate, projectFinishDate;
-    Integer i = 0;
+    Button projectDetailsBtn, finishProjectBtn, listRequirementsBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_activity_main);
 
+        setTestMock();
+
         projectName = findViewById(R.id.projectName);
         projectStartDate = findViewById(R.id.projectStartDate);
         projectFinishDate = findViewById(R.id.projectFinishDate);
 
-        Button projectDetailsBtn = findViewById(R.id.projectDetailsBtn);
+        projectDetailsBtn = findViewById(R.id.projectDetailsBtn);
+        finishProjectBtn = findViewById(R.id.finishProjectBtn);
+        listRequirementsBtn = findViewById(R.id.listRequirementsBtn);
+        //TODO implementar lista de requisitos
 
         projectDetailsBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -49,17 +68,8 @@ public class ProjectActivity extends AppCompatActivity {
 
                 {
 
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-                    i = i++;
-                    Project project = new Project();
-                    project.setId(i);
-                    project.setName(projectName.getText().toString());
-                    project.setStartDate(LocalDate.parse(projectStartDate.getText().toString(), dtf));
-                    project.setFinalDate(LocalDate.parse(projectFinishDate.getText().toString(), dtf));
-                    System.out.println(project.toString());
-
                     Intent i = new Intent(ProjectActivity.this, RequirementsActivity.class);
+                    i.putExtra("projectInputName", projectName.getText().toString());
                     startActivity(i);
 
                 }
@@ -76,8 +86,85 @@ public class ProjectActivity extends AppCompatActivity {
 
         });
 
+        finishProjectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if
+
+                (
+                        checkAllFields() &&
+                        checkName(projectName.getText().toString()) &&
+                        checkStartDate(projectStartDate.getText().toString()) &&
+                        checkFinalDate(projectFinishDate.getText().toString()) &&
+                        checkRequirements()
+                )
+
+                {
+
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                    Project inputProject = new Project();
+                    inputProject.setName(projectName.getText().toString());
+                    inputProject.setStartDate(LocalDate.parse(projectStartDate.getText().toString(), dtf));
+                    inputProject.setFinalDate(LocalDate.parse(projectFinishDate.getText().toString(), dtf));
+
+                    ProjectService projectService = new ProjectService(ProjectActivity.this);
+
+                    //TODO mocking user here!!!!
+                    inputProject.setUser(new UserService(ProjectActivity.this).findById(1));
+
+                    Project createdProject = projectService.save(inputProject);
+
+                    requirementsInput.forEach(x -> x.setProject(projectService.findById(createdProject.getId())));
+
+                    RequirementService requirementService = new RequirementService(ProjectActivity.this);
+
+                    System.out.println("printing requirements\n*\n*\n*\n*\n*\n*\n*\n*");
+
+                    requirementService.saveAll(requirementsInput);
+
+                    System.out.println(createdProject);
+
+                    requirementService.findAll().forEach(System.out::println);
+
+                }
+
+            }
+        });
+
+
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater exibirMenu = getMenuInflater();
+        exibirMenu.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.homepage:
+
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+
+            case R.id.project_activity:
+
+                startActivity(new Intent(this, ProjectActivity.class));
+                return true;
+
+            case R.id.requirement_register:
+
+                startActivity(new Intent(this, RequirementsActivity.class));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     private boolean checkAllFields () {
         if
         (
@@ -99,6 +186,20 @@ public class ProjectActivity extends AppCompatActivity {
             return true;
 
         }
+    }
+
+    private boolean checkRequirements() {
+
+        if (requirementsInput.size() < 3) {
+
+            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Devem haver pelo menos 3 requisitos!", 5000);
+            snackbar.show();
+            return false;
+
+        }
+
+        return true;
+
     }
 
     private boolean checkName(String str) {
@@ -181,6 +282,20 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         return false;
+
+    }
+
+    private void setTestMock() {
+
+        TextView mockTest = findViewById(R.id.secret_mock_project);
+        mockTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                projectName.setText("Projeto para Teste");
+                projectStartDate.setText("15/07/2029");
+                projectFinishDate.setText("28/03/2035");
+            }
+        });
 
     }
 

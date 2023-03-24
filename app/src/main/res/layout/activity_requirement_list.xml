@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/static_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Requisitos"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/titleRequirementsList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Project X Requirements"
+        android:textSize="24sp"
+        android:layout_marginStart="16dp"
+        android:layout_below="@+id/static_text"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"/>
+
+    <!-- ScrollView to hold sequence of cards -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="550dp"
+        android:layout_below="@id/titleRequirementsList"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/returnRequirementList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_gravity="center"
+        android:text="Voltar"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/scrollView"></Button>
+
+</RelativeLayout>
