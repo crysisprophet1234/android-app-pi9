@@ -23,11 +23,11 @@ import java.util.Set;
 
 public class RequirementImageService implements RequirementImageRepository {
 
-    private SQLiteHelper sgbd;
+    private final SQLiteHelper sgbd;
     private SQLiteDatabase db;
 
-    private ProjectService projectService;
-    private Context context;
+    private final ProjectService projectService;
+    private final Context context;
 
     public RequirementImageService(Context context) {
         this.context = context;

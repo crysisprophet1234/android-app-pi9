@@ -32,55 +32,35 @@ import java.util.List;
 
 public class RequirementListActivity extends AppCompatActivity {
 
-    TextView tvTitle, tvLink;
-    Button returnRequirementList;
+    private TextView tvTitle, tvLink;
+    private Button returnRequirementList;
+    private MenuHelper menuHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requirement_list);
+
+        menuHelper = new MenuHelper(this);
 
         setUpRequirements();
 
         returnRequirementList = findViewById(R.id.returnRequirementList);
 
-        returnRequirementList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        returnRequirementList.setOnClickListener(view -> finish());
 
     }
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater exibirMenu = getMenuInflater();
-        exibirMenu.inflate(R.menu.menu_main, menu);
+        menuHelper.onCreateOptionsMenu(menu);
         return true;
     }
 
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.homepage:
-
-                startActivity(new Intent(this, MainActivity.class));
-                return true;
-
-            case R.id.project_activity:
-
-                startActivity(new Intent(this, ProjectActivity.class));
-                return true;
-
-            case R.id.requirement_register:
-
-                startActivity(new Intent(this, RequirementsActivity.class));
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return menuHelper.onOptionsItemSelected(item);
     }
 
     private void setUpRequirements() {

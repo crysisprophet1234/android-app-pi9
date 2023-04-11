@@ -16,7 +16,7 @@ public class Requirement {
     private Integer hours;
     private Double latitude;
     private Double longitude;
-    private Set<RequirementImage> images = new HashSet<>(2);
+    private final Set<RequirementImage> images = new HashSet<>(2);
     private Project project;
 
     public Requirement(){

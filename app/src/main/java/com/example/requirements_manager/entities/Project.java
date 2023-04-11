@@ -14,7 +14,7 @@ public class Project {
     private String documentacaoUrl;
     private User user;
 
-    private Set<Requirement> requirements = new HashSet<>();
+    private final Set<Requirement> requirements = new HashSet<>();
 
     public Project(){
 

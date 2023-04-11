@@ -14,11 +14,15 @@
         android:title="Cadastrar requisitos"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/log_off"
+        android:title="Log off"
+        app:showAsAction="never"/>
 
-
+    <!--
     <item android:id="@+id/deleteAll"
         android:title="Deletar tudo!!!"
         app:showAsAction="never"/>
+        -->
 
 
 

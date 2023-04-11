@@ -21,11 +21,11 @@ import java.util.List;
 
 public class RequirementService implements RequirementRepository {
 
-    private SQLiteHelper sgbd;
+    private final SQLiteHelper sgbd;
     private SQLiteDatabase db;
 
-    private ProjectService projectService;
-    private Context context;
+    private final ProjectService projectService;
+    private final Context context;
 
     public RequirementService (Context context) {
         this.context = context;

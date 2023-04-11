@@ -22,8 +22,8 @@ public class ProjectService implements ProjectRepository {
 
     private UserService userService;
     private RequirementService requirementService;
-    private Context context;
-    private SQLiteHelper sgbd;
+    private final Context context;
+    private final SQLiteHelper sgbd;
     private SQLiteDatabase db;
 
     public ProjectService (Context context) {

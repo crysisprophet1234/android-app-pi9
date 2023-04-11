@@ -20,6 +20,12 @@
         android:theme="@style/Theme.RequirementsManager"
         tools:targetApi="31">
         <activity
+            android:name=".application.SignupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".application.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".application.DocumentationActivity"
             android:exported="false" />
         <activity
@@ -28,7 +34,7 @@
             android:label="@string/title_activity_menu"
             android:theme="@style/Theme.RequirementsManager.NoActionBar" />
         <activity
-            android:name=".RequirementListActivity"
+            android:name=".application.RequirementListActivity"
             android:exported="false" />
         <activity
             android:name=".application.MainActivity"
@@ -44,9 +50,6 @@
             android:exported="true" />
         <activity
             android:name=".application.RequirementsActivity"
-            android:exported="true" />
-        <activity
-            android:name=".application.RequirementListActivity"
             android:exported="true" />
     </application>
 

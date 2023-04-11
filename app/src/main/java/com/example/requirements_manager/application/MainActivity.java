@@ -38,13 +38,30 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
 
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
+    private MenuHelper menuHelper;
+
+    public static boolean loggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        menuHelper = new MenuHelper(this);
+
         mockUsers();
+
+        //loggedIn = getIntent().getBooleanExtra("loggedIn", false);
+
+        //ADICIONAR LOG OFF TODO
+
+        if (!loggedIn) {
+
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(loginIntent);
+
+        }
 
         setProjectsView();
 
@@ -96,58 +113,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater exibirMenu = getMenuInflater();
-        exibirMenu.inflate(R.menu.menu_main, menu);
+        menuHelper.onCreateOptionsMenu(menu);
         return true;
     }
 
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.homepage:
-                Intent homeIntent = new Intent(this, MainActivity.class);
-                if (getClass().getName().equals(MainActivity.class.getName())) {
-                    homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                }
-                startActivity(homeIntent);
-                return true;
-
-            case R.id.project_activity:
-
-                Intent projectIntent = new Intent(this, ProjectActivity.class);
-                if (getClass().getName().equals(ProjectActivity.class.getName())) {
-                    projectIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                }
-                startActivity(projectIntent);
-                return true;
-
-            case R.id.requirement_register:
-
-                Intent requirementIntent = new Intent(this, RequirementsActivity.class);
-                if (getClass().getName().equals(RequirementsActivity.class.getName())) {
-                    requirementIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                }
-                startActivity(requirementIntent);
-                return true;
-
-
-
-            case R.id.deleteAll:
-
-                RequirementService reqService = new RequirementService(this);
-                ProjectService projectService = new ProjectService(this);
-
-                reqService.deleteAll();
-                projectService.deleteAll();
-                recreate();
-
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return menuHelper.onOptionsItemSelected(item);
     }
 
     private void setProjectsView() {
@@ -210,7 +184,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (userService.findAll().size() > 0) {
-            users.forEach(x -> userService.delete(x.getId()));
+            userService.delete(1);
+            userService.delete(2);
+            userService.delete(3);
         }
 
         users.forEach(x -> userService.save(x));

@@ -18,15 +18,54 @@ import java.util.List;
 
 public class UserService implements UserRepository {
 
-    private SQLiteHelper sgbd;
+    private final SQLiteHelper sgbd;
     private SQLiteDatabase db;
 
-    private Context context;
+    private final Context context;
 
     public UserService (Context context) {
         this.context = context;
         this.sgbd = new SQLiteHelper(context, "requirements_manager");
     }
+
+    @Override
+    public User loginWithUsernameAndPassword(User user) {
+
+        db = sgbd.getReadableDatabase();
+
+        String[] projection = { "id", "nome", "empresa", "email", "senha" };
+
+        String selection = "nome = ? AND senha = ?";
+
+        String[] selectionArgs = { user.getName(), user.getPassword() };
+
+        Cursor cursor = db.query(
+                "tb_usuario",
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        User loginUser = null;
+
+        if (cursor.moveToFirst()) {
+            loginUser = new User();
+            loginUser.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+            loginUser.setName(cursor.getString(cursor.getColumnIndexOrThrow("nome")));
+            loginUser.setCompany(cursor.getString(cursor.getColumnIndexOrThrow("empresa")));
+            loginUser.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
+            loginUser.setPassword(cursor.getString(cursor.getColumnIndexOrThrow("senha")));
+        }
+
+        cursor.close();
+
+        return loginUser;
+
+    }
+
 
     @Override
     public List<User> findAll() {

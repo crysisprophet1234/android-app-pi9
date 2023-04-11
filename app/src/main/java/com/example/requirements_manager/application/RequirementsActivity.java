@@ -49,13 +49,17 @@ public class RequirementsActivity extends AppCompatActivity {
     TextInputEditText title, desc, hours;
     Button back, clear, add, btnChooseFile;
     Spinner difficulty, importance;
-
     Set<String> imagesInputSet = new HashSet<>(2);
+
+    private MenuHelper menuHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.requirements_activity_main);
+
+        menuHelper = new MenuHelper(this);
 
         setSpinners();
 
@@ -68,8 +72,8 @@ public class RequirementsActivity extends AppCompatActivity {
         add = findViewById(R.id.addBtn);
         btnChooseFile = findViewById(R.id.btnChooseFile);
 
-        difficulty = (Spinner) findViewById(R.id.requirementDifficulty);
-        importance = (Spinner) findViewById(R.id.requirementImportance);
+        difficulty = findViewById(R.id.requirementDifficulty);
+        importance = findViewById(R.id.requirementImportance);
 
         setMockRequirement();
 
@@ -126,7 +130,15 @@ public class RequirementsActivity extends AppCompatActivity {
         checkIntent();
 
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menuHelper.onCreateOptionsMenu(menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return menuHelper.onOptionsItemSelected(item);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
@@ -352,36 +364,6 @@ public class RequirementsActivity extends AppCompatActivity {
 
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater exibirMenu = getMenuInflater();
-        exibirMenu.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.homepage:
-
-                startActivity(new Intent(this, MainActivity.class));
-                return true;
-
-            case R.id.project_activity:
-
-                startActivity(new Intent(this, ProjectActivity.class));
-                return true;
-
-            case R.id.requirement_register:
-
-                startActivity(new Intent(this, RequirementsActivity.class));
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private boolean checkEmpty() {
 
         if
@@ -440,7 +422,7 @@ public class RequirementsActivity extends AppCompatActivity {
 
         {
 
-            Spinner spinnerImportance = (Spinner) findViewById(R.id.requirementImportance);
+            Spinner spinnerImportance = findViewById(R.id.requirementImportance);
 
             ArrayAdapter<CharSequence> adapterImportance = ArrayAdapter.createFromResource(this,
                     R.array.importance_array, android.R.layout.simple_spinner_item);
@@ -453,7 +435,7 @@ public class RequirementsActivity extends AppCompatActivity {
 
         {
 
-            Spinner spinnerDifficulty = (Spinner) findViewById(R.id.requirementDifficulty);
+            Spinner spinnerDifficulty = findViewById(R.id.requirementDifficulty);
 
             ArrayAdapter<CharSequence> adapterDifficulty = ArrayAdapter.createFromResource(this,
                     R.array.difficulty_array, android.R.layout.simple_spinner_item);

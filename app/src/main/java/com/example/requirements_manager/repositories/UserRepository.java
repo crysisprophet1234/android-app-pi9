@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface UserRepository {
 
+    User loginWithUsernameAndPassword(User user);
     List<User> findAll();
 
     User findById(Integer id);
