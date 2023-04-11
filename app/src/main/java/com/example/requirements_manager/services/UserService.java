@@ -21,7 +21,10 @@ public class UserService implements UserRepository {
     private SQLiteHelper sgbd;
     private SQLiteDatabase db;
 
+    private Context context;
+
     public UserService (Context context) {
+        this.context = context;
         this.sgbd = new SQLiteHelper(context, "requirements_manager");
     }
 
@@ -93,6 +96,7 @@ public class UserService implements UserRepository {
 
         ContentValues values = new ContentValues();
 
+        values.put("id", user.getId() != null ? user.getId() : null);
         values.put("nome", user.getName());
         values.put("empresa", user.getCompany());
         values.put("email", user.getEmail());
@@ -124,6 +128,16 @@ public class UserService implements UserRepository {
 
     @Override
     public void delete(Integer id) {
+
+        db = sgbd.getWritableDatabase();
+
+        long rows = db.delete("tb_usuario", "id = " + id, null);
+
+        if (rows == 0) {
+
+            throw new Resources.NotFoundException("Usuario ID " + id + " n encontrado!");
+
+        }
 
     }
 }

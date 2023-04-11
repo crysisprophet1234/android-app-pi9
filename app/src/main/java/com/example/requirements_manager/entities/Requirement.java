@@ -1,7 +1,9 @@
 package com.example.requirements_manager.entities;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Requirement {
 
@@ -12,21 +14,25 @@ public class Requirement {
     private String importance;
     private String difficulty;
     private Integer hours;
-
+    private Double latitude;
+    private Double longitude;
+    private Set<RequirementImage> images = new HashSet<>(2);
     private Project project;
 
     public Requirement(){
 
     }
 
-    public Requirement(Integer id, String title, String desc, String importance, String difficulty, Integer hours, Project project) {
+    public Requirement(Integer id, String title, String desc, Instant moment, String importance, String difficulty, Integer hours, Double latitude, Double longitude, Project project) {
         this.id = id;
         this.title = title;
         this.desc = desc;
-        this.moment = Instant.now();
+        this.moment = moment;
         this.importance = importance;
         this.difficulty = difficulty;
         this.hours = hours;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.project = project;
     }
 
@@ -87,7 +93,28 @@ public class Requirement {
     }
 
     public Project getProject() { return project; }
+
     public void setProject(Project project) { this.project = project; }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Set<RequirementImage> getImages() {
+        return images;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -112,8 +139,9 @@ public class Requirement {
                 ", importance='" + importance + '\'' +
                 ", difficulty='" + difficulty + '\'' +
                 ", hours=" + hours +
-                ", project.id=" + project.getId() +
-                ", project.name=" + project.getName() +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", images=" + images +
                 '}';
     }
 }

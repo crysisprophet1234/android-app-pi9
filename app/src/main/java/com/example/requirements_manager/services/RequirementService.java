@@ -24,7 +24,12 @@ public class RequirementService implements RequirementRepository {
     private SQLiteHelper sgbd;
     private SQLiteDatabase db;
 
+    private ProjectService projectService;
+    private Context context;
+
     public RequirementService (Context context) {
+        this.context = context;
+        this.projectService = new ProjectService(context);
         this.sgbd = new SQLiteHelper(context, "requirements_manager");
     }
 
@@ -33,7 +38,7 @@ public class RequirementService implements RequirementRepository {
 
         db = sgbd.getReadableDatabase();
 
-        String[] fields = {"id", "titulo", "descricao", "prioridade", "dificuldade", "tempo_estimado", "momento_registro", "projeto_id"};
+        String[] fields = {"id", "titulo", "descricao", "prioridade", "dificuldade", "tempo_estimado", "momento_registro", "latitude_registro", "longitude_registro", "projeto_id"};
 
         Cursor cursor = db.query("tb_requisito", fields, null, null, null, null, null );
 
@@ -43,8 +48,7 @@ public class RequirementService implements RequirementRepository {
 
         for (int i = 1; i <= cursor.getCount(); i++) {
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime dateTime = LocalDateTime.parse(cursor.getString(cursor.getColumnIndexOrThrow("momento_registro")), formatter);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
             Requirement requirement = new Requirement();
             requirement.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
@@ -53,13 +57,23 @@ public class RequirementService implements RequirementRepository {
             requirement.setImportance(cursor.getString(cursor.getColumnIndexOrThrow("prioridade")));
             requirement.setDifficulty(cursor.getString(cursor.getColumnIndexOrThrow("dificuldade")));
             requirement.setHours(cursor.getInt(cursor.getColumnIndexOrThrow("tempo_estimado")));
-            requirement.setMoment(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+            requirement.setMoment(dtf.parse(cursor.getString(cursor.getColumnIndexOrThrow("momento_registro")), Instant::from));
+            requirement.setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow("latitude_registro")));
+            requirement.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow("longitude_registro")));
+            //requirement.setProject(projectService.findById(cursor.getInt(cursor.getColumnIndexOrThrow("projeto_id"))));
 
-            //TODO VERIFICAR DATA
+            RequirementImageService requirementImageService = new RequirementImageService(context);
+
+            requirementImageService.findByRequirementId(Long.valueOf(requirement.getId()))
+                    .forEach(x -> requirement.getImages().add(x));
 
             requirements.add(requirement);
 
+            cursor.moveToNext();
+
         }
+
+        db.close();
 
         return requirements;
 
@@ -70,7 +84,9 @@ public class RequirementService implements RequirementRepository {
 
         db = sgbd.getReadableDatabase();
 
-        String[] fields = {"id", "titulo", "descricao", "prioridade", "dificuldade", "tempo_estimado", "momento_registro", "projeto_id"};
+        System.out.println("versao bd = " + db.getVersion());
+
+        String[] fields = {"id", "titulo", "descricao", "prioridade", "dificuldade", "tempo_estimado", "momento_registro", "latitude_registro", "longitude_registro", "projeto_id"};
 
         Cursor cursor = db.query("tb_requisito", fields, "projeto_id = " + id, null, null, null, null );
 
@@ -80,8 +96,7 @@ public class RequirementService implements RequirementRepository {
 
         for (int i = 1; i <= cursor.getCount(); i++) {
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime dateTime = LocalDateTime.parse(cursor.getString(cursor.getColumnIndexOrThrow("momento_registro")), formatter);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
             Requirement requirement = new Requirement();
             requirement.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
@@ -90,15 +105,23 @@ public class RequirementService implements RequirementRepository {
             requirement.setImportance(cursor.getString(cursor.getColumnIndexOrThrow("prioridade")));
             requirement.setDifficulty(cursor.getString(cursor.getColumnIndexOrThrow("dificuldade")));
             requirement.setHours(cursor.getInt(cursor.getColumnIndexOrThrow("tempo_estimado")));
-            requirement.setMoment(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+            requirement.setMoment(dtf.parse(cursor.getString(cursor.getColumnIndexOrThrow("momento_registro")), Instant::from));
+            requirement.setProject(projectService.findById(cursor.getInt(cursor.getColumnIndexOrThrow("projeto_id"))));
+            requirement.setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow("latitude_registro")));
+            requirement.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow("longitude_registro")));
 
-            //TODO VERIFICAR DATA
+            RequirementImageService requirementImageService = new RequirementImageService(context);
+
+            requirementImageService.findByRequirementId(Long.valueOf(requirement.getId()))
+                    .forEach(x -> requirement.getImages().add(x));
 
             requirements.add(requirement);
 
             cursor.moveToNext();
 
         }
+
+        db.close();
 
         return requirements;
 
@@ -109,13 +132,13 @@ public class RequirementService implements RequirementRepository {
 
         db = sgbd.getReadableDatabase();
 
-        String[] fields = {"id", "titulo", "descricao", "prioridade", "dificuldade", "tempo_estimado", "momento_registro", "projeto_id"};
+        String[] fields = {"id", "titulo", "descricao", "prioridade", "dificuldade", "tempo_estimado", "momento_registro", "latitude_registro", "longitude_registro", "projeto_id"};
 
         Cursor cursor = db.query("tb_requisito", fields, "id = " + id, null, null, null, null );
 
         if (cursor.moveToFirst()) {
 
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
             Requirement requirement = new Requirement();
             requirement.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
@@ -124,16 +147,23 @@ public class RequirementService implements RequirementRepository {
             requirement.setImportance(cursor.getString(cursor.getColumnIndexOrThrow("prioridade")));
             requirement.setDifficulty(cursor.getString(cursor.getColumnIndexOrThrow("dificuldade")));
             requirement.setHours(cursor.getInt(cursor.getColumnIndexOrThrow("tempo_estimado")));
+            requirement.setMoment(dtf.parse(cursor.getString(cursor.getColumnIndexOrThrow("momento_registro")), Instant::from));
+            requirement.setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow("latitude_registro")));
+            requirement.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow("longitude_registro")));
+            //requirement.setProject(projectService.findById(cursor.getInt(cursor.getColumnIndexOrThrow("projeto_id"))));
 
-            try {
-                requirement.setMoment(Instant.parse(cursor.getString(cursor.getColumnIndexOrThrow("momento_registro"))));
-            } catch (DateTimeParseException ex) {
-                requirement.setMoment((Instant) dtf.parse(cursor.getString(cursor.getColumnIndexOrThrow("momento_registro"))));
-            }
+            RequirementImageService requirementImageService = new RequirementImageService(context);
+
+            requirementImageService.findByRequirementId(Long.valueOf(requirement.getId()))
+                    .forEach(x -> requirement.getImages().add(x));
+
+            db.close();
 
             return requirement;
 
         } else {
+
+            db.close();
 
             throw new Resources.NotFoundException("Resource ID " + id + " not found!");
 
@@ -152,9 +182,13 @@ public class RequirementService implements RequirementRepository {
         values.put("prioridade", requirement.getImportance());
         values.put("dificuldade", requirement.getDifficulty());
         values.put("tempo_estimado", requirement.getHours());
+        values.put("longitude_registro", requirement.getLongitude());
+        values.put("latitude_registro", requirement.getLatitude());
         values.put("projeto_id", requirement.getProject().getId());
 
         long newId = db.insert("tb_requisito", null, values);
+
+        db.close();
 
         if (newId != 0) {
 
@@ -185,6 +219,11 @@ public class RequirementService implements RequirementRepository {
             values.put("dificuldade", req.getDifficulty());
             values.put("tempo_estimado", req.getHours());
             values.put("projeto_id", req.getProject().getId());
+            values.put("latitude_registro", req.getLatitude());
+            values.put("longitude_registro", req.getLatitude());
+            values.put("projeto_id", req.getProject().getId());
+
+            req.setMoment(Instant.now());
 
             long newId = db.insert("tb_requisito", null, values);
 
@@ -194,13 +233,40 @@ public class RequirementService implements RequirementRepository {
 
         }
 
+        db.close();
+
         return requirementsInserted;
 
     }
 
     @Override
     public Requirement update(Requirement requirement) {
-        return null;
+
+        db = sgbd.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("titulo", requirement.getTitle());
+        values.put("descricao", requirement.getDesc());
+        values.put("prioridade", requirement.getImportance());
+        values.put("dificuldade", requirement.getDifficulty());
+        values.put("tempo_estimado", requirement.getHours());
+
+        long result = db.update("tb_requisito", values, "id = " + requirement.getId(), null);
+
+        if (result != 0) {
+
+            db.close();
+
+            return findById(Long.valueOf(requirement.getId()));
+
+        } else {
+
+            db.close();
+
+            throw new Resources.NotFoundException("Item ID " + requirement.getId() + " not found!");
+
+        }
+
     }
 
     @Override
@@ -212,9 +278,13 @@ public class RequirementService implements RequirementRepository {
 
         if (rows == 0) {
 
+            db.close();
+
             throw new Resources.NotFoundException("Requisito ID " + id + " n encontrado!");
 
         }
+
+        db.close();
 
     }
 
@@ -224,6 +294,8 @@ public class RequirementService implements RequirementRepository {
         db = sgbd.getWritableDatabase();
 
         long rows = db.delete("tb_requisito", "id > 0", null);
+
+        db.close();
 
     }
 }

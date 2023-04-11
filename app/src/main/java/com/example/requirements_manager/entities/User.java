@@ -89,7 +89,6 @@ public class User {
                 ", company='" + company + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", projects=" + projects +
                 '}';
     }
 }

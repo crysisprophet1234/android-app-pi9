@@ -6,30 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".application.RequirementsActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Requirements Manager"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="670dp"
-
-
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,84 +23,114 @@
                 android:id="@+id/secret_mock_requirement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/new_project_name"
-                android:textSize="26dp"
-                android:textColor="@color/black"
                 android:layout_marginBottom="20dp"
-                android:textAlignment="center"/>
+                android:text="@string/new_project_name"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="26dp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:background="#DCDCDC"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp">
+                android:layout_height="490dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/requirementsTitle"
-                    android:background="#DCDCDC"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Título do requisito" />
+                    android:orientation="vertical">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="#DCDCDC">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:background="#DCDCDC"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/requirementsTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#DCDCDC"
+                            android:hint="Título do requisito" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/requirementDesc"
-                    android:background="#DCDCDC"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:hint="Descrição do requisito" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="#DCDCDC">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#DCDCDC"
-                android:layout_margin="10dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/requirementDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:background="#DCDCDC"
+                            android:hint="Descrição do requisito" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/hoursEstimated"
-                    android:background="#DCDCDC"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Tempo em horas estimado" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="#DCDCDC">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Importância"
-                android:layout_margin="10dp"/>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/hoursEstimated"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#DCDCDC"
+                            android:hint="Tempo em horas estimado" />
 
-            <Spinner
-                android:id="@+id/requirementImportance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:padding="5dp"
-                android:background="#f2f2f2"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dificuldade"
-                android:layout_margin="10dp" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Importância" />
 
-            <Spinner
-                android:id="@+id/requirementDifficulty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:padding="5dp"
-                android:background="#f2f2f2"/>
+                    <Spinner
+                        android:id="@+id/requirementImportance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="#f2f2f2"
+                        android:padding="5dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Dificuldade" />
+
+                    <Spinner
+                        android:id="@+id/requirementDifficulty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="#f2f2f2"
+                        android:padding="5dp" />
+
+                    <Button
+                        android:id="@+id/btnChooseFile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Selecionar imagens"></Button>
+
+                    <LinearLayout
+                        android:id="@+id/image_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -131,34 +141,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="15dp"
-                    android:padding="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
-                        <Button
-                            android:id="@+id/backBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Voltar"
-                            android:height="60dp"
-                            android:layout_marginRight="20dp"></Button>
+                    <Button
+                        android:id="@+id/backBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="20dp"
+                        android:height="50dp"
+                        android:text="Voltar"></Button>
 
-                        <Button
-                            android:id="@+id/clearBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Limpar"
-                            android:height="60dp"
-                            android:layout_marginRight="20dp"></Button>
+                    <Button
+                        android:id="@+id/clearBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="20dp"
+                        android:height="50dp"
+                        android:text="Limpar"></Button>
 
-                        <Button
-                            android:id="@+id/addBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:height="60dp"
-                            android:text="Adicionar"></Button>
+                    <Button
+                        android:id="@+id/addBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:height="50dp"
+                        android:text="Adicionar"></Button>
 
                 </LinearLayout>
 
@@ -166,6 +176,6 @@
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

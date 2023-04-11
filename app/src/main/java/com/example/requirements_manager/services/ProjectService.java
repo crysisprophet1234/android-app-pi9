@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.requirements_manager.R;
 import com.example.requirements_manager.database.SQLiteHelper;
 import com.example.requirements_manager.entities.Project;
 import com.example.requirements_manager.repositories.ProjectRepository;
@@ -20,11 +21,13 @@ import java.util.List;
 public class ProjectService implements ProjectRepository {
 
     private UserService userService;
-
+    private RequirementService requirementService;
+    private Context context;
     private SQLiteHelper sgbd;
     private SQLiteDatabase db;
 
     public ProjectService (Context context) {
+        this.context = context;
         this.sgbd = new SQLiteHelper(context, "requirements_manager");
     }
 
@@ -33,7 +36,7 @@ public class ProjectService implements ProjectRepository {
 
         db = sgbd.getReadableDatabase();
 
-        String[] fields = {"id", "nome", "data_inicio", "data_entrega", "usuario_id"};
+        String[] fields = {"id", "nome", "data_inicio", "data_entrega", "documentacao_url", "usuario_id"};
 
         Cursor cursor = db.query("tb_projeto", fields, null, null, null, null, null );
 
@@ -51,22 +54,29 @@ public class ProjectService implements ProjectRepository {
             String nome = cursor.getString(cursor.getColumnIndexOrThrow("nome"));
             String data_inicio = cursor.getString(cursor.getColumnIndexOrThrow("data_inicio"));
             String data_entrega = cursor.getString(cursor.getColumnIndexOrThrow("data_entrega"));
+            String documentacao_url = cursor.getString(cursor.getColumnIndexOrThrow("documentacao_url"));
             Integer usuario_id = cursor.getInt(cursor.getColumnIndexOrThrow("usuario_id"));
 
             Project project = new Project();
             project.setId(id);
             project.setName(nome);
+            project.setDocumentacaoUrl(documentacao_url);
             project.setStartDate(LocalDate.parse(data_inicio, dtf));
             project.setFinalDate(LocalDate.parse(data_entrega, dtf));
 
-            //TODO
-            //project.setUser(userService.findById(usuario_id));
+            userService = new UserService(context);
+            project.setUser(userService.findById(usuario_id));
+
+            //requirementService = new RequirementService(context);
+            //project.getRequirements().addAll(requirementService.findByProjectId(Long.valueOf(id)));
 
             projects.add(project);
 
             cursor.moveToNext();
         }
 
+        db.close();
+        db.close();
         return projects;
 
     }
@@ -76,7 +86,7 @@ public class ProjectService implements ProjectRepository {
 
         db = sgbd.getReadableDatabase();
 
-        String[] fields = {"id", "nome", "data_inicio", "data_entrega", "usuario_id"};
+        String[] fields = {"id", "nome", "data_inicio", "data_entrega", "documentacao_url", "usuario_id"};
 
         Cursor cursor = db.query("tb_projeto", fields, "id = " + id, null, null, null, null );
 
@@ -87,6 +97,7 @@ public class ProjectService implements ProjectRepository {
             String nome = cursor.getString(cursor.getColumnIndexOrThrow("nome"));
             String data_inicio = cursor.getString(cursor.getColumnIndexOrThrow("data_inicio"));
             String data_entrega = cursor.getString(cursor.getColumnIndexOrThrow("data_entrega"));
+            String documentacao_url = cursor.getString(cursor.getColumnIndexOrThrow("documentacao_url"));
             Integer usuario_id = cursor.getInt(cursor.getColumnIndexOrThrow("usuario_id"));
 
             System.out.println(usuario_id);
@@ -94,19 +105,27 @@ public class ProjectService implements ProjectRepository {
             Project project = new Project();
             project.setId((int) id.longValue());
             project.setName(nome);
+            project.setDocumentacaoUrl(documentacao_url);
             project.setStartDate(LocalDate.parse(data_inicio, dtf));
             project.setFinalDate(LocalDate.parse(data_entrega, dtf));
 
-            //TODO
-            //project.setUser(userService.findById(usuario_id));
+            userService = new UserService(context);
+            project.setUser(userService.findById(usuario_id));
 
+            //requirementService = new RequirementService(context);
+            //project.getRequirements().addAll(requirementService.findByProjectId(Long.valueOf(id)));
+
+            db.close();
             return project;
 
         } else {
 
+            db.close();
             throw new Resources.NotFoundException("Resource ID " + id + " not found!");
 
         }
+
+
 
     }
 
@@ -119,6 +138,7 @@ public class ProjectService implements ProjectRepository {
         values.put("nome", project.getName());
         values.put("data_inicio", project.getStartDate().toString());
         values.put("data_entrega", project.getFinalDate().toString());
+        values.put("documentacao_url", project.getDocumentacaoUrl());
         values.put("usuario_id", project.getUser().getId());
 
         long newId = db.insert("tb_projeto", null, values);
@@ -126,13 +146,16 @@ public class ProjectService implements ProjectRepository {
         if (newId != 0) {
 
             project.setId(Integer.parseInt(String.valueOf(newId)));
+            db.close();
             return project;
 
         } else {
 
+            db.close();
             throw new SQLException();
 
         }
+
 
     }
 
@@ -150,9 +173,12 @@ public class ProjectService implements ProjectRepository {
 
         if (rows == 0) {
 
+            db.close();
             throw new Resources.NotFoundException("Projeto ID " + id + " n encontrado!");
 
         }
+
+        db.close();
 
     }
 
@@ -162,6 +188,8 @@ public class ProjectService implements ProjectRepository {
         db = sgbd.getWritableDatabase();
 
         long rows = db.delete("tb_projeto", "id > 0", null);
+
+        db.close();
 
     }
 

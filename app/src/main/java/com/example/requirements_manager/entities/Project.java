@@ -1,6 +1,7 @@
 package com.example.requirements_manager.entities;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -10,19 +11,21 @@ public class Project {
     private String name;
     private LocalDate startDate;
     private LocalDate finalDate;
+    private String documentacaoUrl;
     private User user;
 
-    private Set<Requirement> requirements;
+    private Set<Requirement> requirements = new HashSet<>();
 
     public Project(){
 
     }
 
-    public Project(Integer id, String name, LocalDate startDate, LocalDate finalDate, User user) {
+    public Project(Integer id, String name, LocalDate startDate, LocalDate finalDate, User user, String documentacaoUrl) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.finalDate = finalDate;
+        this.documentacaoUrl = documentacaoUrl;
         this.user = user;
     }
 
@@ -66,6 +69,14 @@ public class Project {
         this.user = user;
     }
 
+    public String getDocumentacaoUrl() {
+        return documentacaoUrl;
+    }
+
+    public void setDocumentacaoUrl(String documentacaoUrl) {
+        this.documentacaoUrl = documentacaoUrl;
+    }
+
     public Set<Requirement> getRequirements() {
         return requirements;
     }
@@ -90,9 +101,9 @@ public class Project {
                 ", name='" + name + '\'' +
                 ", startDate=" + startDate +
                 ", finalDate=" + finalDate +
+                ", documentacaoUrl='" + documentacaoUrl + '\'' +
                 ", user=" + user +
                 ", requirements=" + requirements +
                 '}';
     }
-
 }

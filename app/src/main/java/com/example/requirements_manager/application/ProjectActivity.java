@@ -1,10 +1,9 @@
 package com.example.requirements_manager.application;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,8 +19,10 @@ import com.example.requirements_manager.R;
 import com.example.requirements_manager.entities.Project;
 import com.example.requirements_manager.entities.Requirement;
 import com.example.requirements_manager.services.ProjectService;
+import com.example.requirements_manager.services.RequirementImageService;
 import com.example.requirements_manager.services.RequirementService;
 import com.example.requirements_manager.services.UserService;
+import com.example.requirements_manager.util.LocationTracker;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -29,11 +30,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProjectActivity extends AppCompatActivity {
 
     public static List<Requirement> requirementsInput = new ArrayList<>();
-    TextInputEditText projectName, projectStartDate, projectFinishDate;
+    TextInputEditText projectName, projectStartDate, projectFinishDate, projectDocUrl;
     Button projectDetailsBtn, finishProjectBtn, listRequirementsBtn;
 
     @Override
@@ -44,93 +46,109 @@ public class ProjectActivity extends AppCompatActivity {
         setTestMock();
 
         projectName = findViewById(R.id.projectName);
+        projectDocUrl = findViewById(R.id.projectDocUrl);
         projectStartDate = findViewById(R.id.projectStartDate);
         projectFinishDate = findViewById(R.id.projectFinishDate);
 
         projectDetailsBtn = findViewById(R.id.projectDetailsBtn);
         finishProjectBtn = findViewById(R.id.finishProjectBtn);
         listRequirementsBtn = findViewById(R.id.listRequirementsBtn);
-        //TODO implementar lista de requisitos
 
-        projectDetailsBtn.setOnClickListener(new View.OnClickListener() {
+        projectDetailsBtn.setOnClickListener(view -> {
 
-            @Override
-            public void onClick(View view) {
+            if
 
-                if
+            (
+                checkAllFields() &&
+                checkName(projectName.getText().toString()) &&
+                checkStartDate(projectStartDate.getText().toString()) &&
+                checkFinalDate(projectFinishDate.getText().toString())
+            )
 
-                (
-                    checkAllFields() &&
-                    checkName(projectName.getText().toString()) &&
-                    checkStartDate(projectStartDate.getText().toString()) &&
-                    checkFinalDate(projectFinishDate.getText().toString())
-                )
+            {
 
-                {
+                Intent i = new Intent(ProjectActivity.this, RequirementsActivity.class);
+                i.putExtra("projectInputName", projectName.getText().toString());
+                startActivity(i);
 
-                    Intent i = new Intent(ProjectActivity.this, RequirementsActivity.class);
-                    i.putExtra("projectInputName", projectName.getText().toString());
-                    startActivity(i);
+            }
 
-                }
+            else
 
-                else
+            {
 
-                {
-
-                    System.out.println("falha!!!!");
-
-                }
+                System.out.println("falha!!!!");
 
             }
 
         });
 
-        finishProjectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        listRequirementsBtn.setOnClickListener(view -> {
 
-                if
+            Intent i = new Intent(this, RequirementListActivity.class);
+            i.putExtra("isCreating", true);
+            startActivity(i);
 
-                (
-                        checkAllFields() &&
-                        checkName(projectName.getText().toString()) &&
-                        checkStartDate(projectStartDate.getText().toString()) &&
-                        checkFinalDate(projectFinishDate.getText().toString()) &&
-                        checkRequirements()
-                )
+        });
 
-                {
+        finishProjectBtn.setOnClickListener(view -> {
 
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            if
 
-                    Project inputProject = new Project();
-                    inputProject.setName(projectName.getText().toString());
-                    inputProject.setStartDate(LocalDate.parse(projectStartDate.getText().toString(), dtf));
-                    inputProject.setFinalDate(LocalDate.parse(projectFinishDate.getText().toString(), dtf));
+            (
+                    checkAllFields() &&
+                    checkName(projectName.getText().toString()) &&
+                    checkStartDate(projectStartDate.getText().toString()) &&
+                    checkFinalDate(projectFinishDate.getText().toString()) &&
+                    checkRequirements()
+                    //TODO checkDocUrl()
+            )
 
-                    ProjectService projectService = new ProjectService(ProjectActivity.this);
+            {
 
-                    //TODO mocking user here!!!!
-                    inputProject.setUser(new UserService(ProjectActivity.this).findById(1));
 
-                    Project createdProject = projectService.save(inputProject);
 
-                    requirementsInput.forEach(x -> x.setProject(projectService.findById(createdProject.getId())));
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-                    RequirementService requirementService = new RequirementService(ProjectActivity.this);
+                Project inputProject = new Project();
+                inputProject.setName(projectName.getText().toString());
+                inputProject.setDocumentacaoUrl(projectDocUrl.getText().toString());
+                inputProject.setStartDate(LocalDate.parse(projectStartDate.getText().toString(), dtf));
+                inputProject.setFinalDate(LocalDate.parse(projectFinishDate.getText().toString(), dtf));
 
-                    System.out.println("printing requirements\n*\n*\n*\n*\n*\n*\n*\n*");
+                ProjectService projectService = new ProjectService(ProjectActivity.this);
 
-                    requirementService.saveAll(requirementsInput);
+                //TODO mocking user here!!!!
+                inputProject.setUser(new UserService(ProjectActivity.this).findById(1));
 
-                    System.out.println(createdProject);
+                Project createdProject = projectService.save(inputProject);
 
-                    requirementService.findAll().forEach(System.out::println);
+                requirementsInput.forEach(x -> x.setProject(projectService.findById(createdProject.getId())));
 
-                }
+                requirementsInput.forEach(x -> x.setLatitude(LocationTracker.getCurrentLocation(this)[0]));
+
+                requirementsInput.forEach(x -> x.setLongitude(LocationTracker.getCurrentLocation(this)[1]));
+
+                RequirementService requirementService = new RequirementService(ProjectActivity.this);
+
+                requirementsInput = requirementService.saveAll(requirementsInput);
+
+                RequirementImageService requirementImageService = new RequirementImageService(ProjectActivity.this);
+
+                requirementsInput.forEach(x -> requirementImageService.saveAll(x.getImages()));
+
+                System.out.println(createdProject);
+
+                requirementsInput.forEach(System.out::println);
+
+                requirementsInput.clear();
+
+                setResult(1);
+
+                finish();
 
             }
+
         });
 
 
@@ -199,6 +217,35 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         return true;
+
+    }
+
+    private boolean checkDocUrl() {
+
+        String url = projectDocUrl.getText().toString();
+
+        AtomicBoolean action = new AtomicBoolean(false);
+
+        if (url.isEmpty()) {
+
+            String a;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("AlertDialog");
+            builder.setMessage("Would you like to continue learning how to use Android alerts?");
+
+            builder.setPositiveButton("OK", (dialog, which) -> action.set(true));
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> action.set(false));
+
+            AlertDialog dialog = builder.create();
+
+            dialog.show();
+
+        }
+
+        System.out.println("returning action as " + action);
+        return action.get();
 
     }
 
@@ -294,6 +341,7 @@ public class ProjectActivity extends AppCompatActivity {
                 projectName.setText("Projeto para Teste");
                 projectStartDate.setText("15/07/2029");
                 projectFinishDate.setText("28/03/2035");
+                projectDocUrl.setText("https://github.com/crysisprophet1234/android-app-pi9");
             }
         });
 

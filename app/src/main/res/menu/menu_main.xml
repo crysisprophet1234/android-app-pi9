@@ -14,10 +14,12 @@
         android:title="Cadastrar requisitos"
         app:showAsAction="never"/>
 
-    <!--
+
+
     <item android:id="@+id/deleteAll"
         android:title="Deletar tudo!!!"
         app:showAsAction="never"/>
-    -->
+
+
 
 </menu>

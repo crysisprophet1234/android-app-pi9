@@ -26,12 +26,25 @@
         android:textColor="@android:color/black"
         android:textStyle="bold"/>
 
+    <TextView
+        android:id="@+id/linkText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Link Documentação "
+        android:textSize="18sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/titleRequirementsList"
+        android:textStyle="bold"
+        android:textColor="#0000EE"
+        android:drawableEnd="@drawable/link_icon" />
+
     <!-- ScrollView to hold sequence of cards -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
-        android:layout_below="@id/titleRequirementsList"
+        android:layout_height="540dp"
+        android:layout_below="@id/linkText"
         android:padding="16dp">
 
         <LinearLayout
@@ -51,7 +64,7 @@
         android:layout_marginHorizontal="10dp"
         android:layout_gravity="center"
         android:text="Voltar"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="0dp"
         android:layout_below="@+id/scrollView"></Button>
 
 </RelativeLayout>

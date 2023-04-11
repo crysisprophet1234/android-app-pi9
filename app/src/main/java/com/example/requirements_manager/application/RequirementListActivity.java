@@ -21,16 +21,18 @@ import android.widget.TextView;
 import com.example.requirements_manager.R;
 import com.example.requirements_manager.entities.Requirement;
 import com.example.requirements_manager.services.RequirementService;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 public class RequirementListActivity extends AppCompatActivity {
 
-    TextView tvTitle;
+    TextView tvTitle, tvLink;
     Button returnRequirementList;
 
     @Override
@@ -88,11 +90,25 @@ public class RequirementListActivity extends AppCompatActivity {
         tvTitle = findViewById(R.id.titleRequirementsList);
         tvTitle.setText(getIntent().getStringExtra("projectTitle"));
 
+        tvLink = findViewById(R.id.linkText);
+        String link = getIntent().getStringExtra("docUrl");
+        if (link != null) {
+            tvLink.setOnClickListener(view -> {
+                Intent i = new Intent(this, DocumentationActivity.class);
+                i.putExtra("docUrl", link);
+                startActivity(i);
+            });
+        }
+
         Integer projectId = getIntent().getIntExtra("projectId", 0);
 
         LinearLayout linearLayout = findViewById(R.id.linearLayout);
 
-        for (Requirement req : service.findByProjectId(Long.valueOf(projectId))) {
+        Boolean isCreating = getIntent().getBooleanExtra("isCreating", false);
+
+        List<Requirement> requirements = isCreating ? ProjectActivity.requirementsInput : service.findByProjectId(Long.valueOf(projectId));
+
+        for (Requirement req : requirements) {
 
             CardView cardView = new CardView(this);
 
@@ -107,7 +123,6 @@ public class RequirementListActivity extends AppCompatActivity {
             cardView.setRadius(16f);
             cardView.setContentPadding(16, 20, 20, 16);
 
-            // Create a new LinearLayout to hold the elements in the CardView
             LinearLayout cardLayout = new LinearLayout(this);
             cardLayout.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -115,8 +130,6 @@ public class RequirementListActivity extends AppCompatActivity {
             ));
             cardLayout.setOrientation(LinearLayout.VERTICAL);
             cardLayout.setPadding(8, 16, 8, 16);
-
-            //Add horizontal linear layout to title and ID
 
             {
 
@@ -132,7 +145,7 @@ public class RequirementListActivity extends AppCompatActivity {
                 titleTextView.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1 // Use weight 1 to take up 1/2 of the available space
+                        1
                 ));
                 titleTextView.setText(req.getTitle());
                 titleTextView.setTextSize(18f);
@@ -144,9 +157,11 @@ public class RequirementListActivity extends AppCompatActivity {
                 idTextView.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1 // Use weight 1 to take up 1/2 of the available space
+                        1
                 ));
-                idTextView.setText("ID " + req.getId().toString());
+                if (req.getId() != null) {
+                    idTextView.setText("ID " + req.getId().toString());
+                }
                 idTextView.setTextSize(14f);
                 idTextView.setGravity(Gravity.END);
                 titleIdLayout.addView(idTextView);
@@ -154,8 +169,6 @@ public class RequirementListActivity extends AppCompatActivity {
                 cardLayout.addView(titleIdLayout);
 
             }
-
-            //Add horizontal linear layout to dueDate and priority
 
             {
 
@@ -175,7 +188,9 @@ public class RequirementListActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1
                 ));
-                dueDateTextView.setText("Criado em: " + formatDate(req.getMoment().toString().substring(0, 10)));
+                if (req.getMoment() != null) {
+                    dueDateTextView.setText("Criado em: " + formatDate(req.getMoment().toString().substring(0, 10)));
+                }
                 datePriorityLayout.addView(dueDateTextView);
 
                 TextView priorityTextView = new TextView(this);
@@ -207,13 +222,33 @@ public class RequirementListActivity extends AppCompatActivity {
 
             }
 
-            // Add the cardLayout to the CardView and then add the CardView to the LinearLayout
+            cardLayout.setOnClickListener(view -> {
+
+                Intent i = new Intent(this, RequirementsActivity.class);
+                i.putExtra("isUpdating", true);
+                i.putExtra("requirementId", req.getId());
+                i.putExtra("projectInputName", req.getProject().getName());
+                startActivityForResult(i, 1);
+
+            });
+
             cardView.addView(cardLayout);
 
             linearLayout.addView(cardView);
 
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == 1) {
+            recreate();
+            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Requisito atualizado com sucesso!", 1500);
+            snackbar.show();
+        }
     }
 
     private String formatDate(String substring) {
